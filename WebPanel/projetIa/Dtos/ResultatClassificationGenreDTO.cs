@@ -2,7 +2,10 @@ namespace projetIa.Dtos
 {
     public class ResultatClassificationGenreDTO
     {
-        public required string gender { get; set; }
-        public float time { get; set; }
+        public string? gender { get; set; } // female | male
+        public float? time { get; set; }
+        public string? message { get; set; }
+        public string? description { get; set; }
+        public int? code { get; set; }
     }
 }
