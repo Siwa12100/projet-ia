@@ -172,5 +172,124 @@ namespace projetIa.Tests
             // Nombre d'échecs : 113
             // Pourcentage de réussite : 86%
         }
+
+        // [Fact]
+        public async Task Test_Segmentation_Puis_Classification_Homme()
+        {
+            List<string> sexes = new List<string>
+            {
+                "male",
+                "female"
+            };
+
+            Assert.NotNull(service);
+            int nbReussitesMales = 0;
+            int nbEchecsMales = 0;
+            int nbReussitesFemelles = 0;
+            int nbEchecsFemelles = 0;
+            int tauxReussiteAPasserMales = 90;
+            int tauxReussiteAPasserFemelles = 80;
+
+            foreach (var sexe in sexes)
+            {
+                var nomDossierImages = "";
+                if (sexe == "male")
+                {
+                    nomDossierImages = "men";
+                }
+                else
+                {
+                    nomDossierImages = "women";
+                }
+
+                var fichiers = recuperateurImages.ListerFichiersDossier(nomDossierImages);
+                Assert.NotEmpty(fichiers);
+
+                foreach (var fichier in fichiers)
+                {
+                    var ImageByteArray = File.ReadAllBytes(fichier.FullName);
+                    if (ImageByteArray == null)
+                    {
+                        Console.WriteLine($"Impossible de lire le fichier {fichier.Name}");
+                        if (sexe == "male")
+                        {
+                            nbEchecsMales++;
+                        }
+                        else
+                        {
+                            nbEchecsFemelles++;
+                        }
+                        continue;
+                    }
+
+                    var resultatSegmentation = await service.SegmenterImage(ImageByteArray);
+                    Assert.NotNull(resultatSegmentation);
+                    bool resultatValide = true;
+
+                    foreach (var imageCrop in resultatSegmentation)
+                    {
+                        var ImageCropByteArray = File.ReadAllBytes(imageCrop);
+                        if (ImageCropByteArray == null)
+                        {
+                            Console.WriteLine($"Impossible de lire le fichier {imageCrop}");
+                            continue;
+                        }
+
+                        var resultatClassification = await service.ClassifierParGenre(ImageCropByteArray);
+                        Assert.NotNull(resultatClassification);
+
+                        if (resultatClassification != "male")
+                        {
+                            resultatValide = false;
+                        }
+                    }
+
+                    if (resultatValide)
+                    {
+                        if (sexe == "male")
+                        {
+                            nbReussitesMales++;
+                        }
+                        else
+                        {
+                            nbReussitesFemelles++;
+                        }
+                    }
+                    else
+                    {
+                        if (sexe == "male")
+                        {
+                            nbEchecsMales++;
+                        }
+                        else
+                        {
+                            nbEchecsFemelles++;
+                        }
+                    }
+
+                    Console.WriteLine($"Résultat pour {fichier.Name} : {resultatSegmentation}");
+                }
+
+                if (sexe == "male")
+                {
+                    Console.WriteLine($"Nombre de réussites pour les hommes : {nbReussitesMales}");
+                    Console.WriteLine($"Nombre d'échecs pour les hommes : {nbEchecsMales}");
+                    Console.WriteLine($"Pourcentage de réussite pour les hommes : {100 * nbReussitesMales / (nbReussitesMales + nbEchecsMales)}%");
+
+                    int tauxReussiteReelMales = 100 * nbReussitesMales / (nbReussitesMales + nbEchecsMales);
+                    Assert.True(tauxReussiteReelMales >= tauxReussiteAPasserMales);
+                }
+                else
+                {
+                    Console.WriteLine($"Nombre de réussites pour les femmes : {nbReussitesFemelles}");
+                    Console.WriteLine($"Nombre d'échecs pour les femmes : {nbEchecsFemelles}");
+                    Console.WriteLine($"Pourcentage de réussite pour les femmes : {100 * nbReussitesFemelles / (nbReussitesFemelles + nbEchecsFemelles)}%");
+
+                    int tauxReussiteReelFemelles = 100 * nbReussitesFemelles / (nbReussitesFemelles + nbEchecsFemelles);
+                    Assert.True(tauxReussiteReelFemelles >= tauxReussiteAPasserFemelles);
+                }
+            }
+
+        }
     }
 }
