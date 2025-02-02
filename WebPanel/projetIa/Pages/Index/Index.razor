@@ -1,148 +1,72 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
-
-<h1>Projet Ia</h1>
-
-<div class="drop-zone">
-    <MudStack Style="width: 100%">
-        <MudFileUpload T="IBrowserFile"
-                       @ref="@_zoneFichier"
-                       OnFilesChanged="SurChangementFichier"
-                       Hidden="@false"
-                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                       InputStyle="opacity:0"
-                       tabindex="-1"
-                       @ondrop="@ReinitialiserClasseDrag"
-                       @ondragenter="@ActiverClasseDrag"
-                       @ondragleave="@ReinitialiserClasseDrag"
-                       @ondragend="@ReinitialiserClasseDrag"
-                       MaxFiles="1">
-            <ActivatorContent>
-                <MudPaper Height="300px"
-                          Outlined="true"
-                          Class="@_classeDrag">
-                    <MudText Typo="Typo.h6">
-                        Déposez un fichier image ici ou cliquez
-                    </MudText>
-                    @if (_nomFichier != null)
-                    {
-                        <MudChip T="string"
-                                 Color="Color.Dark"
-                                 Text="@_nomFichier"
-                                 tabindex="-1" />
-                    }
-                </MudPaper>
-            </ActivatorContent>
-        </MudFileUpload>
-
-        <MudToolBar Gutters="@false"
-                    Class="relative d-flex justify-end gap-4">
-            <MudButton Color="Color.Primary"
-                       OnClick="@OuvrirSelectionFichierAsync"
-                       Variant="Variant.Filled">
-                Sélectionner un fichier
-            </MudButton>
-            <MudButton Color="Color.Primary"
-                       Disabled="@(_nomFichier == null)"
-                       OnClick="@Envoyer"
-                       Variant="Variant.Filled">
-                Envoyer
-            </MudButton>
-            <MudButton Color="Color.Error"
-                       Disabled="@(_nomFichier == null)"
-                       OnClick="@ViderAsync"
-                       Variant="Variant.Filled">
-                Vider
-            </MudButton>
-        </MudToolBar>
-    </MudStack>
-</div>
-
-@if (this.sexe != null)
-{
-    <MudText Typo="Typo.h6">
-        Sexe : @this.sexe
-    </MudText>
-}
-else
-{
-    <MudText Typo="Typo.h6">
-        Sexe : inconnu
-    </MudText>
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@* @page "/"
-
-
-
-<PageTitle>Index</PageTitle>
-
-<h1>Projet Ia </h1>
-
-<div class="drop-zone">
-    <MudStack Style="width: 100%">
-    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
-                   @ref="@_fileUpload"
-                   OnFilesChanged="OnInputFileChanged"
-                   AppendMultipleFiles
-                   Hidden="@false"
-                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                   InputStyle="opacity:0"
-                   tabindex="-1"
-                   @ondrop="@ClearDragClass"
-                   @ondragenter="@SetDragClass"
-                   @ondragleave="@ClearDragClass"
-                   @ondragend="@ClearDragClass">
-        <ActivatorContent>
-            <MudPaper Height="300px"
-                      Outlined="true"
-                      Class="@_dragClass">
-                <MudText Typo="Typo.h6">
-                    Drag and drop files here or click
+<MudContainer MaxWidth="MaxWidth.Large" Class="pa-4">
+    <MudCard Class="pa-4">
+        <MudCardContent>
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.h3" Class="text-center">Détection de Genre via IA</MudText>
+                <MudText Typo="Typo.body1" Class="text-center">
+                    Cette application permet de soumettre une photo et d'obtenir une prédiction du genre de la personne présente sur l'image.
                 </MudText>
-                @foreach (var file in _fileNames)
+
+                <MudFileUpload T="IBrowserFile"
+                               @ref="@_zoneFichier"
+                               OnFilesChanged="SurChangementFichier"
+                               Hidden="@false"
+                               InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                               InputStyle="opacity:0"
+                               tabindex="-1"
+                               MaxFiles="1">
+                    <ActivatorContent>
+                        <MudPaper Height="300px"
+                                  Outlined="true"
+                                  Class="@_classeDrag"
+                                  Style="display: flex; justify-content: center; align-items: center;">
+                            <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" />
+                            <MudText Typo="Typo.h6">
+                                Déposez une image ici ou cliquez pour en sélectionner une
+                            </MudText>
+                        </MudPaper>
+                    </ActivatorContent>
+                </MudFileUpload>
+
+                @if (_nomFichier != null)
                 {
-                    <MudChip T="string"
-                             Color="Color.Dark"
-                             Text="@file"
-                             tabindex="-1" />
+                    <MudPaper Outlined="true" Class="pa-4 text-center">
+                        <MudText Typo="Typo.body1">Fichier sélectionné : @_nomFichier</MudText>
+                        <MudImage 
+                            Src="@_imageUrl" 
+                            Alt="Image sélectionnée" 
+                            Width="300" 
+                            Height="300" 
+                            Fluid="true" 
+                            ObjectFit="ObjectFit.Contain" 
+                            Elevation="10" 
+                            Class="rounded-lg mx-auto" />
+                    </MudPaper>
                 }
-            </MudPaper>
-        </ActivatorContent>
-    </MudFileUpload>
-    <MudToolBar Gutters="@false"
-                Class="relative d-flex justify-end gap-4">
-        <MudButton Color="Color.Primary"
-                   OnClick="@OpenFilePickerAsync"
-                   Variant="Variant.Filled">
-            Open file picker
-        </MudButton>
-        <MudButton Color="Color.Primary"
-                   Disabled="@(!_fileNames.Any())"
-                   OnClick="@Upload"
-                   Variant="Variant.Filled">
-            Upload
-        </MudButton>
-        <MudButton Color="Color.Error"
-                   Disabled="@(!_fileNames.Any())"
-                   OnClick="@ClearAsync"
-                   Variant="Variant.Filled">
-            Clear
-        </MudButton>
-    </MudToolBar>
-</MudStack>
-</div> *@
+
+                <MudToolBar Gutters="false" Class="d-flex justify-center gap-4 mt-4">
+                    <MudButton Color="Color.Primary" OnClick="@OuvrirSelectionFichierAsync" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.PhotoLibrary" /> Sélectionner une image
+                    </MudButton>
+                    <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@Envoyer" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Envoyer
+                    </MudButton>
+                    <MudButton Color="Color.Error" Disabled="@(_nomFichier == null)" OnClick="@ViderAsync" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Clear" /> Vider
+                    </MudButton>
+                </MudToolBar>
+
+                @if (this.sexe != null)
+                {
+                    <MudAlert Severity="MudBlazor.Severity.Success" Class="mt-4">
+                        Sexe détecté : <b>@this.sexe</b>
+                    </MudAlert>
+                }
+            </MudStack>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+<MudSnackbarProvider />

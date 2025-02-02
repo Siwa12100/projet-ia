@@ -11,7 +11,10 @@ namespace projetIa.Pages.Index
         private const string ClasseDragParDefaut = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
         private string _classeDrag = ClasseDragParDefaut;
         private string? _nomFichier;
+        private IBrowserFile? _fichierSelectionne;
         private MudFileUpload<IBrowserFile>? _zoneFichier;
+        public  string? _imageUrl { get; set; }
+        // private MudSnackbar? _snackbar;
         private static readonly string[] ExtensionsAutorisees = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
 
         protected string? sexe = null;
@@ -19,106 +22,99 @@ namespace projetIa.Pages.Index
         [Inject]
         protected IService? IaService { get; set; }
 
+        [Inject]
+        protected ISnackbar? Snackbar { get; set; }
+
         private async Task ViderAsync()
         {
             await (_zoneFichier?.ClearAsync() ?? Task.CompletedTask);
             _nomFichier = null;
-            this.sexe = null;
+            _fichierSelectionne = null;
+            _imageUrl = null;
+            sexe = null;
+            AfficherMessage("Fichier supprimé.", Severity.Info);
             ReinitialiserClasseDrag();
         }
 
         private Task OuvrirSelectionFichierAsync()
             => _zoneFichier?.OpenFilePickerAsync() ?? Task.CompletedTask;
 
-        // private void SurChangementFichier(InputFileChangeEventArgs e)
-        // {
-        //     ReinitialiserClasseDrag();
-            
-        //     var fichier = e.GetMultipleFiles(1).FirstOrDefault();
-        //     if (fichier == null) return;
-            
-        //     if (_nomFichier != null)
-        //     {
-        //         Console.WriteLine("Un seul fichier est autorisé.");
-        //         return;
-        //     }
-            
-        //     if (!ExtensionsAutorisees.Contains(Path.GetExtension(fichier.Name).ToLower()))
-        //     {
-        //         Console.WriteLine("Format de fichier non autorisé.");
-        //         return;
-        //     }
-
-        //     _nomFichier = fichier.Name;
-        // }
-
-        private IBrowserFile? _fichierSelectionne;
-
-        private void SurChangementFichier(InputFileChangeEventArgs e)
+        private async void SurChangementFichier(InputFileChangeEventArgs e)
         {
             ReinitialiserClasseDrag();
 
             var fichier = e.GetMultipleFiles(1).FirstOrDefault();
             if (fichier == null)
             {
-                Console.WriteLine("Aucun fichier sélectionné.");
+                AfficherMessage("Aucun fichier sélectionné.", Severity.Warning);
                 return;
             }
 
             if (!ExtensionsAutorisees.Contains(Path.GetExtension(fichier.Name).ToLower()))
             {
-                Console.WriteLine("Format de fichier non autorisé.");
+                AfficherMessage("Format de fichier non autorisé. Veuillez choisir une image.", Severity.Error);
                 return;
             }
 
             _fichierSelectionne = fichier;
             _nomFichier = fichier.Name;
+
+            await ChargerImageAsync(fichier);
+
+            AfficherMessage("Fichier sélectionné avec succès.", Severity.Success);
+        }
+
+        private async Task ChargerImageAsync(IBrowserFile fichier)
+        {
+            try
+            {
+                var memoryStream = new MemoryStream();
+                await fichier.OpenReadStream(maxAllowedSize: 100000000).CopyToAsync(memoryStream);
+                _imageUrl = $"data:image/png;base64,{Convert.ToBase64String(memoryStream.ToArray())}";
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                AfficherMessage($"Erreur lors du chargement de l'image : {ex.Message}", Severity.Error);
+            }
         }
 
 
         private async Task Envoyer()
         {
-            if (_nomFichier != null)
-            {
-                Console.WriteLine($"Envoi du fichier : {_nomFichier}");
-                await this.RecupererRetourAi();
-
-            }
-        }
-
-        protected async Task RecupererRetourAi()
-        {
-            if (this.IaService == null)
-            {
-                Console.WriteLine("Service IA non disponible.");
-                return;
-            }
-
             if (_fichierSelectionne == null)
             {
-                Console.WriteLine("Aucun fichier sélectionné.");
+                AfficherMessage("Aucun fichier à envoyer.", Severity.Warning);
                 return;
             }
 
             using var memoryStream = new MemoryStream();
-            await _fichierSelectionne.OpenReadStream(maxAllowedSize:100000000).CopyToAsync(memoryStream);
+            await _fichierSelectionne.OpenReadStream(maxAllowedSize: 100000000).CopyToAsync(memoryStream);
             var fichierByteArray = memoryStream.ToArray();
 
-            var resultatIa = await this.IaService.ClassifierParGenre(fichierByteArray);
-            if (resultatIa == null)
+            if (IaService == null)
             {
-                Console.WriteLine("Erreur lors de la classification.");
+                AfficherMessage("Service IA non disponible.", Severity.Error);
                 return;
             }
 
-            this.sexe = resultatIa;
-            Console.WriteLine($"Le sexe est : {this.sexe}");
+            var resultatIa = await IaService.ClassifierParGenre(fichierByteArray);
+            if (resultatIa == null)
+            {
+                AfficherMessage("Erreur lors de la classification.", Severity.Error);
+                return;
+            }
+
+            sexe = resultatIa;
+            AfficherMessage($"Le sexe détecté est : {sexe}", Severity.Success);
         }
 
-        private void ActiverClasseDrag()
-            => _classeDrag = $"{ClasseDragParDefaut} mud-border-primary";
+        private void ActiverClasseDrag() => _classeDrag = $"{ClasseDragParDefaut} mud-border-primary";
+        private void ReinitialiserClasseDrag() => _classeDrag = ClasseDragParDefaut;
 
-        private void ReinitialiserClasseDrag()
-            => _classeDrag = ClasseDragParDefaut;
+        private void AfficherMessage(string message, Severity niveau)
+        {
+            Snackbar?.Add(message, niveau);
+        }
     }
 }
