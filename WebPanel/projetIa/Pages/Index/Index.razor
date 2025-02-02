@@ -1,5 +1,92 @@
 ﻿@page "/"
 
+<PageTitle>Index</PageTitle>
+
+<h1>Projet Ia</h1>
+
+<div class="drop-zone">
+    <MudStack Style="width: 100%">
+        <MudFileUpload T="IBrowserFile"
+                       @ref="@_zoneFichier"
+                       OnFilesChanged="SurChangementFichier"
+                       Hidden="@false"
+                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                       InputStyle="opacity:0"
+                       tabindex="-1"
+                       @ondrop="@ReinitialiserClasseDrag"
+                       @ondragenter="@ActiverClasseDrag"
+                       @ondragleave="@ReinitialiserClasseDrag"
+                       @ondragend="@ReinitialiserClasseDrag"
+                       MaxFiles="1">
+            <ActivatorContent>
+                <MudPaper Height="300px"
+                          Outlined="true"
+                          Class="@_classeDrag">
+                    <MudText Typo="Typo.h6">
+                        Déposez un fichier image ici ou cliquez
+                    </MudText>
+                    @if (_nomFichier != null)
+                    {
+                        <MudChip T="string"
+                                 Color="Color.Dark"
+                                 Text="@_nomFichier"
+                                 tabindex="-1" />
+                    }
+                </MudPaper>
+            </ActivatorContent>
+        </MudFileUpload>
+
+        <MudToolBar Gutters="@false"
+                    Class="relative d-flex justify-end gap-4">
+            <MudButton Color="Color.Primary"
+                       OnClick="@OuvrirSelectionFichierAsync"
+                       Variant="Variant.Filled">
+                Sélectionner un fichier
+            </MudButton>
+            <MudButton Color="Color.Primary"
+                       Disabled="@(_nomFichier == null)"
+                       OnClick="@Envoyer"
+                       Variant="Variant.Filled">
+                Envoyer
+            </MudButton>
+            <MudButton Color="Color.Error"
+                       Disabled="@(_nomFichier == null)"
+                       OnClick="@ViderAsync"
+                       Variant="Variant.Filled">
+                Vider
+            </MudButton>
+        </MudToolBar>
+    </MudStack>
+</div>
+
+@if (this.sexe != null)
+{
+    <MudText Typo="Typo.h6">
+        Sexe : @this.sexe
+    </MudText>
+}
+else
+{
+    <MudText Typo="Typo.h6">
+        Sexe : inconnu
+    </MudText>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @page "/"
+
 
 
 <PageTitle>Index</PageTitle>
@@ -58,4 +145,4 @@
         </MudButton>
     </MudToolBar>
 </MudStack>
-</div>
+</div> *@

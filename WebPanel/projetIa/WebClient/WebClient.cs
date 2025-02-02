@@ -12,6 +12,7 @@ namespace projetIa.WebClient
         public WebClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
+            this._httpClient.BaseAddress = new Uri("http://149.7.5.30:21089/api/");
         }
 
         public async Task<ZipArchive?> SegmenterImageAsync(byte[] image)
