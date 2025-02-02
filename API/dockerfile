@@ -1,25 +1,26 @@
-# Use an official lightweight Python image as the base
-FROM python:3.9-slim
+# Utilisation d'une image Python légère
+FROM python:3.10-slim
 
-# Set the working directory in the container
+# Installation des dépendances système (pour OpenCV notamment)
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Définition du répertoire de travail
 WORKDIR /app
 
-# Copy only the necessary files first for better caching
-COPY requirements.txt requirements.txt
+# Copier uniquement requirements.txt pour optimiser le cache Docker
+COPY requirements.txt .
 
-# Install dependencies
+# Installation des dépendances Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
+# Copier le reste du projet
 COPY . .
 
-# Expose the port Flask runs on
+# Exposition du port Flask
 EXPOSE 5000
 
-# Define the environment variable to run Flask
-ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run the Flask application
-CMD ["flask", "run"]
-
+# Commande pour lancer l'API Flask
+CMD ["python", "app.py"]
