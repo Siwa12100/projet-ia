@@ -4,6 +4,7 @@ bin/
 obj/
 
 Images/*
+*/DossierPartage/*
 
 # User-specific files
 *.suo

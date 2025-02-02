@@ -59,7 +59,7 @@ namespace projetIa.Service
             if (image == null) return null;
 
             byte[] imageBytes = new byte[image.Size];
-            image.OpenReadStream().Read(imageBytes);
+            image.OpenReadStream(maxAllowedSize:10000000).Read(imageBytes);
 
             return imageBytes;
         }
