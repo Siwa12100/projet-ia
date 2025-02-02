@@ -18,6 +18,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="../DossierPartage/**">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\projetIa\projetIa.csproj" />
   </ItemGroup>

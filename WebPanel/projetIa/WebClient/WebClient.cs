@@ -16,8 +16,13 @@ namespace projetIa.WebClient
 
         public async Task<ZipArchive?> SegmenterImageAsync(byte[] image)
         {
-            var content = new ByteArrayContent(image);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            using var content = new MultipartFormDataContent();
+            using var imageContent = new ByteArrayContent(image);
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg"); // ou "image/png" selon ton image
+
+            // 🔥 Ajout de l'image avec la clé "image"
+            content.Add(imageContent, "image", "image.jpg");
+
             var response = await _httpClient.PostAsync("segmentation", content);
             if (!response.IsSuccessStatusCode)
             {
@@ -30,9 +35,13 @@ namespace projetIa.WebClient
 
         public async Task<ResultatClassificationGenreDTO?> ClassifierParGenreAsync(byte[] image)
         {
-            var content = new ByteArrayContent(image);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            var response = await _httpClient.PostAsync("classification/genre", content);
+            using var content = new MultipartFormDataContent();
+            using var imageContent = new ByteArrayContent(image);
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+
+            content.Add(imageContent, "image", "image.jpg");
+
+            var response = await _httpClient.PostAsync("gender-classify", content);
             if (!response.IsSuccessStatusCode)
             {
                 return null;
@@ -44,8 +53,12 @@ namespace projetIa.WebClient
 
         public async Task<ResultatClassificationPersonneDTO?> ClassifierParPersonneAsync(byte[] image)
         {
-            var content = new ByteArrayContent(image);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            using var content = new MultipartFormDataContent();
+            using var imageContent = new ByteArrayContent(image);
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+
+            content.Add(imageContent, "image", "image.jpg");
+
             var response = await _httpClient.PostAsync("classification/personne", content);
             if (!response.IsSuccessStatusCode)
             {
