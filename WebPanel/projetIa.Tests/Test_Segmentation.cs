@@ -168,7 +168,7 @@ namespace projetIa.Tests
             int tauxReussiteReel = 100 * nbReussites / (nbReussites + nbEchecs);
             Assert.True(tauxReussiteReel>= tauxReussiteAPasser);
 
-            // Nombre de réussites : 720
+            // // // Nombre de réussites : 720
             // Nombre d'échecs : 113
             // Pourcentage de réussite : 86%
         }
