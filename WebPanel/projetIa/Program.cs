@@ -1,11 +1,18 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
+using projetIa.Service;
+using projetIa.WebClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddMudServices();
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddSingleton<IWebClient, WebClient>();
+builder.Services.AddSingleton<IService, Service>();
 
 var app = builder.Build();
 
