@@ -137,7 +137,7 @@ namespace projetIa.Pages.Index
             }
 
             this.personne = resultatIa;
-            AfficherMessage($"La personne détecté est : {sexe}", Severity.Success);
+            AfficherMessage($"La personne détecté est : {personne}", Severity.Success);
         }
 
         private void ActiverClasseDrag() => _classeDrag = $"{ClasseDragParDefaut} mud-border-primary";

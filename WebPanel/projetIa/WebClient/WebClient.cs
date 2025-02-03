@@ -59,9 +59,11 @@ namespace projetIa.WebClient
 
             content.Add(imageContent, "image", "image.jpg");
 
-            var response = await _httpClient.PostAsync("classification/personne", content);
+            var response = await _httpClient.PostAsync("iut-detection", content);
             if (!response.IsSuccessStatusCode)
             {
+                string contenuReponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("Contenu reponse : " + contenuReponse);
                 return null;
             }
 
