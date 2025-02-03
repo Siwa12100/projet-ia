@@ -4,6 +4,7 @@ import zipfile
 from flask import Flask, jsonify, request, send_file
 import logging
 import json
+from src.models.iut_detection import iut_detection
 from src.models.classify_face import classify
 from src.constants.file_extensions import allowed_extensions
 from src.exception.exception import *
@@ -72,9 +73,26 @@ def gender_classify():
     return jsonify(results), 200
 
 
-# @app.route("/api/web1-classify")
-# def detect_and_crop():
-#     return "<p>Hello, World!</p>"
+@app.route("/api/iut-detection", methods=['POST'])
+def detect_iut_and_crop():
+    input_data = request.files['image']
+
+    # Gestion d'erreur de l'API
+    if input_data.filename == '':
+        raise EmptyDataException
+    
+    file_ext = os.path.splitext(input_data.filename)[1].lower()
+    if file_ext not in allowed_extensions:
+        raise InvalidFileException
+    
+    # Convertion et detection
+    file = file_storage_to_opencv_image(input_data)
+    saved_faces = crop_images(file)
+
+    results = {}
+    results['personne'] = iut_detection(saved_faces[0])
+
+    return jsonify(results), 200
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
