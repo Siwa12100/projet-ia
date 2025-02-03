@@ -1,8 +1,8 @@
 task: classify
 mode: train
-model: runs/classify/train4/weights/best.pt
+model: runs/classify/train/weights/best.pt
 data: drive/MyDrive/Colab Notebooks/iut_detection/
-epochs: 10
+epochs: 2
 time: null
 patience: 25
 batch: 64
@@ -13,7 +13,7 @@ cache: false
 device: null
 workers: 8
 project: null
-name: train5
+name: train4
 exist_ok: false
 pretrained: true
 optimizer: auto
@@ -103,4 +103,4 @@ erasing: 0.4
 crop_fraction: 1.0
 cfg: null
 tracker: botsort.yaml
-save_dir: runs/classify/train5
+save_dir: runs/classify/train4
