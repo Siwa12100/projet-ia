@@ -19,9 +19,8 @@ namespace projetIa.WebClient
         {
             using var content = new MultipartFormDataContent();
             using var imageContent = new ByteArrayContent(image);
-            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg"); // ou "image/png" selon ton image
+            imageContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
 
-            // 🔥 Ajout de l'image avec la clé "image"
             content.Add(imageContent, "image", "image.jpg");
 
             var response = await _httpClient.PostAsync("segmentation", content);

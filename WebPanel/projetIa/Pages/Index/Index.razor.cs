@@ -18,6 +18,7 @@ namespace projetIa.Pages.Index
         private static readonly string[] ExtensionsAutorisees = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
 
         protected string? sexe = null;
+        protected string? personne = null; 
 
         [Inject]
         protected IService? IaService { get; set; }
@@ -32,6 +33,7 @@ namespace projetIa.Pages.Index
             _fichierSelectionne = null;
             _imageUrl = null;
             sexe = null;
+            personne = null;
             AfficherMessage("Fichier supprimé.", Severity.Info);
             ReinitialiserClasseDrag();
         }
@@ -80,7 +82,7 @@ namespace projetIa.Pages.Index
         }
 
 
-        private async Task Envoyer()
+        private async Task EnvoyerClassificationGenre()
         {
             if (_fichierSelectionne == null)
             {
@@ -107,6 +109,35 @@ namespace projetIa.Pages.Index
 
             sexe = resultatIa;
             AfficherMessage($"Le sexe détecté est : {sexe}", Severity.Success);
+        }
+
+        protected async Task EnvoyerClassificationPersonne()
+        {
+            if (_fichierSelectionne == null)
+            {
+                AfficherMessage("Aucun fichier à envoyer.", Severity.Warning);
+                return;
+            }
+
+            using var memoryStream = new MemoryStream();
+            await _fichierSelectionne.OpenReadStream(maxAllowedSize: 100000000).CopyToAsync(memoryStream);
+            var fichierByteArray = memoryStream.ToArray();
+
+            if (IaService == null)
+            {
+                AfficherMessage("Service IA non disponible.", Severity.Error);
+                return;
+            }
+
+            var resultatIa = await IaService.ClassifierParPersonne(fichierByteArray);
+            if (resultatIa == null)
+            {
+                AfficherMessage("Erreur lors de la classification par personne.", Severity.Error);
+                return;
+            }
+
+            this.personne = resultatIa;
+            AfficherMessage($"La personne détecté est : {sexe}", Severity.Success);
         }
 
         private void ActiverClasseDrag() => _classeDrag = $"{ClasseDragParDefaut} mud-border-primary";

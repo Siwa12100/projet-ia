@@ -50,8 +50,11 @@
                     <MudButton Color="Color.Primary" OnClick="@OuvrirSelectionFichierAsync" Variant="Variant.Filled">
                         <MudIcon Icon="@Icons.Material.Filled.PhotoLibrary" /> Sélectionner une image
                     </MudButton>
-                    <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@Envoyer" Variant="Variant.Filled">
-                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Envoyer
+                    <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@EnvoyerClassificationGenre" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Donner genre
+                    </MudButton>
+                    <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@EnvoyerClassificationPersonne" Variant="Variant.Filled">
+                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Reconnaitre
                     </MudButton>
                     <MudButton Color="Color.Error" Disabled="@(_nomFichier == null)" OnClick="@ViderAsync" Variant="Variant.Filled">
                         <MudIcon Icon="@Icons.Material.Filled.Clear" /> Vider
@@ -62,6 +65,13 @@
                 {
                     <MudAlert Severity="MudBlazor.Severity.Success" Class="mt-4">
                         Sexe détecté : <b>@this.sexe</b>
+                    </MudAlert>
+                }
+
+                @if (this.personne != null)
+                {
+                    <MudAlert Severity="MudBlazor.Severity.Success" Class="mt-4">
+                        Personne détectée : <b>@this.personne</b>
                     </MudAlert>
                 }
             </MudStack>

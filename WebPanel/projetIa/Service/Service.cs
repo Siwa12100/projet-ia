@@ -36,7 +36,7 @@ namespace projetIa.Service
         {
             var resultatApi = await this.WebClient.ClassifierParPersonneAsync(image);
             if (resultatApi == null) return null;
-            return resultatApi.pesonne;
+            return resultatApi.personne;
         }
 
         public async Task<List<string>?> SegmenterImage(IBrowserFile image)
