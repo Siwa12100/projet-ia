@@ -36,7 +36,7 @@ namespace projetIa.Service
         {
             var resultatApi = await this.WebClient.ClassifierParPersonneAsync(image);
             if (resultatApi == null) return null;
-            return resultatApi.pesonne;
+            return resultatApi.personne;
         }
 
         public async Task<List<string>?> SegmenterImage(IBrowserFile image)
@@ -59,7 +59,7 @@ namespace projetIa.Service
             if (image == null) return null;
 
             byte[] imageBytes = new byte[image.Size];
-            image.OpenReadStream().Read(imageBytes);
+            image.OpenReadStream(maxAllowedSize:10000000).Read(imageBytes);
 
             return imageBytes;
         }

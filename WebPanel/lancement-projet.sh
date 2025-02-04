@@ -20,6 +20,6 @@ else
 fi
 
 echo "Lancement du conteneur $CONTAINER_NAME sur le port $PORT..."
-docker run -d -p $PORT:80 --name $CONTAINER_NAME $IMAGE_NAME
+docker run -d -p $PORT:8080 --name $CONTAINER_NAME $IMAGE_NAME
 
 echo "Le projet est lancé et disponible sur le port $PORT."
