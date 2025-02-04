@@ -1,1 +1,1 @@
-# projet-ia
+# Projet IA - Classification de genre
