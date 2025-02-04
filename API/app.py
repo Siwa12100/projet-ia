@@ -87,10 +87,9 @@ def detect_iut_and_crop():
     
     # Convertion et detection
     file = file_storage_to_opencv_image(input_data)
-    saved_faces = crop_images(file)
 
     results = {}
-    results['personne'] = iut_detection(saved_faces[0])
+    results['personne'] = iut_detection(file)
 
     return jsonify(results), 200
 
