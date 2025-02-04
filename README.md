@@ -37,6 +37,11 @@ sh ./supprimer-image.sh
 
 ### Documentation
 
+Ultralytics / YOLO : https://docs.ultralytics.com/fr
+
+URLs DataSet:
+- https://www.kaggle.com/datasets/cashutosh/gender-classification-dataset
+- https://www.kaggle.com/datasets/snmahsa/human-images-dataset-men-and-women
 
 # Auteurs
 
