@@ -98,6 +98,7 @@ namespace projetIa.Pages.Index
 
             if (IaService == null)
             {
+                this.chargementApiGenre = false;
                 AfficherMessage("Service IA non disponible.", Severity.Error);
                 return;
             }
@@ -105,6 +106,7 @@ namespace projetIa.Pages.Index
             var resultatIa = await IaService.ClassifierParGenre(fichierByteArray);
             if (resultatIa == null)
             {
+                this.chargementApiGenre = false;
                 AfficherMessage("Erreur lors de la classification.", Severity.Error);
                 return;
             }
@@ -119,6 +121,7 @@ namespace projetIa.Pages.Index
             this.chargementApiPersonne = true;
             if (_fichierSelectionne == null)
             {
+                this.chargementApiPersonne = false;
                 AfficherMessage("Aucun fichier à envoyer.", Severity.Warning);
                 return;
             }
@@ -129,6 +132,7 @@ namespace projetIa.Pages.Index
 
             if (IaService == null)
             {
+                this.chargementApiPersonne = false;
                 AfficherMessage("Service IA non disponible.", Severity.Error);
                 return;
             }
@@ -136,6 +140,7 @@ namespace projetIa.Pages.Index
             var resultatIa = await IaService.ClassifierParPersonne(fichierByteArray);
             if (resultatIa == null)
             {
+                this.chargementApiPersonne = false;
                 AfficherMessage("Erreur lors de la classification par personne.", Severity.Error);
                 return;
             }
