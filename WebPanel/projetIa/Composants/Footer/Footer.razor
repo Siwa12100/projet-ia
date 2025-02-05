@@ -1,41 +1,43 @@
-@namespace projetIa.Composants.NavBar
 
-<nav>
+<footer>
     <div class="gauche">
-        <img src="/Images/goutte.png" alt="la goutte du futur">
-        <p>GenSense</p>
+        <p>Réalisé par : Antoine Pinagot, Jean Marcillac</p>
     </div>
     <div class="centre">
-        <img src="/Images/enderEye.gif" alt="logo_iut">
+        <img src="/Images/trefle.png" alt="logo_iut">
     </div>
     <div class="droite">
-        <img src="/Images/logo_iut.png" alt="logo_iut">
+        <p>Enseignant : M. Falih Issam</p>
     </div>
-</nav>
+</footer>
 
 <style>
-    nav {
+    footer {
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         background-color: black;
         height: 10vh;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        margin-top: 10rem;
+        box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.7);
     }
 
     .gauche {
         display: flex;
         align-items: center;
+        width: 50%;
     }
 
     .centre {
         display: flex;
         align-items: center;
+        width: 20%;
     }
 
     .droite {
         display: flex;
         align-items: center;
+        width: 30%;
     }
 
     p {
@@ -45,7 +47,6 @@
 
     .gauche, .droite, .centre {
         height: 100%;
-        width: 30%;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -61,28 +62,13 @@
         padding-right: 3rem;
     }
 
-    .gauche img {
-        height: 75%;
-        margin-right: 1rem;
-    }
-
     .gauche p {
-        font-size: 1.5rem;
+        font-size: 1rem;
         font-family: Candera;
-    }
-
-    .gauche img, .droite img, .centre img {
-
-        width: auto;
     }
 
     .centre img {
         height: 70%;
-    }
-
-    .droite img {
-
-        height: 54%;
         width: auto;
     }
 
