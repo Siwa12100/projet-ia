@@ -1,5 +1,9 @@
 ﻿@page "/"
 
+@using projetIa.Composants.NavBar
+
+<NavBar />
+
 <MudContainer MaxWidth="MaxWidth.Large" Class="pa-4">
     <MudCard Class="pa-4">
         <MudCardContent>
@@ -47,14 +51,30 @@
                 }
 
                 <MudToolBar Gutters="false" Class="d-flex justify-center gap-4 mt-4">
-                    <MudButton Color="Color.Primary" OnClick="@OuvrirSelectionFichierAsync" Variant="Variant.Filled">
+                    <MudButton Color="Color.Primary" Disabled="@(_nomFichier != null)" OnClick="@OuvrirSelectionFichierAsync" Variant="Variant.Filled">
                         <MudIcon Icon="@Icons.Material.Filled.PhotoLibrary" /> Sélectionner une image
                     </MudButton>
                     <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@EnvoyerClassificationGenre" Variant="Variant.Filled">
-                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Donner genre
+                        @if (this.chargementApiGenre)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Send" />
+                        }
+                          Donner genre
                     </MudButton>
                     <MudButton Color="Color.Primary" Disabled="@(_nomFichier == null)" OnClick="@EnvoyerClassificationPersonne" Variant="Variant.Filled">
-                        <MudIcon Icon="@Icons.Material.Filled.Send" /> Reconnaitre
+                        @if (this.chargementApiPersonne)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Send" />
+                        }
+                          Reconnaître
                     </MudButton>
                     <MudButton Color="Color.Error" Disabled="@(_nomFichier == null)" OnClick="@ViderAsync" Variant="Variant.Filled">
                         <MudIcon Icon="@Icons.Material.Filled.Clear" /> Vider

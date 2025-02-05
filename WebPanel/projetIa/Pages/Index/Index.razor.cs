@@ -14,11 +14,12 @@ namespace projetIa.Pages.Index
         private IBrowserFile? _fichierSelectionne;
         private MudFileUpload<IBrowserFile>? _zoneFichier;
         public  string? _imageUrl { get; set; }
-        // private MudSnackbar? _snackbar;
         private static readonly string[] ExtensionsAutorisees = { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
 
         protected string? sexe = null;
         protected string? personne = null; 
+        protected bool chargementApiGenre = false;
+        protected bool chargementApiPersonne = false;
 
         [Inject]
         protected IService? IaService { get; set; }
@@ -84,6 +85,7 @@ namespace projetIa.Pages.Index
 
         private async Task EnvoyerClassificationGenre()
         {
+            this.chargementApiGenre = true;
             if (_fichierSelectionne == null)
             {
                 AfficherMessage("Aucun fichier à envoyer.", Severity.Warning);
@@ -108,11 +110,13 @@ namespace projetIa.Pages.Index
             }
 
             sexe = resultatIa;
+            this.chargementApiGenre = false;
             AfficherMessage($"Le sexe détecté est : {sexe}", Severity.Success);
         }
 
         protected async Task EnvoyerClassificationPersonne()
         {
+            this.chargementApiPersonne = true;
             if (_fichierSelectionne == null)
             {
                 AfficherMessage("Aucun fichier à envoyer.", Severity.Warning);
@@ -137,6 +141,7 @@ namespace projetIa.Pages.Index
             }
 
             this.personne = resultatIa;
+            this.chargementApiPersonne = false;
             AfficherMessage($"La personne détecté est : {personne}", Severity.Success);
         }
 
